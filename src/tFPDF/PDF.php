@@ -837,7 +837,7 @@ class PDF
     public function Footer()
     {
         // Font style
-        $this->SetFont(graphicReportPDF::DEFAULT_FONT, '', 10);
+        $this->SetFont(GraphicReportPDF::DEFAULT_FONT, '', GraphicReportPDF::DEFAULT_FONT_SIZE);
         $this->SetTextColor(0, 0, 0);
         // Position at 15 mm from bottom
         $this->SetY(-15);

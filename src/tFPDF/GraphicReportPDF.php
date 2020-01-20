@@ -5,7 +5,9 @@ namespace tFPDF;
 
 class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
 {
-    const DEFAULT_FONT = 'Roboto';
+    const DEFAULT_FONT = 'Microsoft YaHei';
+    const DEFAULT_FONT_SIZE = 10;
+
     const COLOR_BLACK = [0,0,0];
     const PAGE_HEIGHT = 270;
     private $tableLabels;
@@ -20,10 +22,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
     {
         parent::__construct($pageOrientation, $pageUnits, $pageSize);
 
-        $this->AddFont(self::DEFAULT_FONT,'','roboto.ttf',true);
-        $this->AddFont(self::DEFAULT_FONT,'B','robotobd.ttf',true);
-        $this->AddFont(self::DEFAULT_FONT,'BI','robotobi.ttf',true);
-        $this->AddFont(self::DEFAULT_FONT,'I','robotoi.ttf',true);
+        $this->AddFont(self::DEFAULT_FONT, '', 'Microsoft Yahei.ttf', true);
     }
 
     /**
@@ -135,7 +134,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
      * @param array $legendList
      */
     public function drawVerticalBarCharts(array $chartData, array $legendList) : void {
-        $this->SetFont( GraphicReportPDF::DEFAULT_FONT, '', 10);
+        $this->SetFont( self::DEFAULT_FONT, '', self::DEFAULT_FONT_SIZE);
         list($red, $green, $blue) = self::COLOR_BLACK;
         $this->SetTextColor($red, $green, $blue);
         $XPage = $this->GetX();
@@ -226,7 +225,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
         foreach ($chartData as $name => $series) {
             $seriesXStart = $chartXStart + $seriesInterval * $i + $barLineWidth * 3 * ($i - 1);
             // Draw week name
-            $this->SetFont( GraphicReportPDF::DEFAULT_FONT, '', $barLineWidth > 2 ? 10 : 8);
+            $this->SetFont( self::DEFAULT_FONT, '', $barLineWidth > 2 ? 10 : 8);
             $this->SetXY($seriesXStart, $chartYStart);
             $this->Cell($barLineWidth * 3, $labelHeight, $name, 0, 0, 'C');
             // Draw bar series
@@ -239,7 +238,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
                 $this->Rect($this->GetX(), $chartYStart - $columnHeight, $barLineWidth, $columnHeight, 'F');
                 // Labels for column
                 $this->SetXY($this->GetX(), $chartYStart - $columnHeight - 3);
-                $this->SetFont( GraphicReportPDF::DEFAULT_FONT, '', $barLineWidth > 2 ? 8 : 4);
+                $this->SetFont( self::DEFAULT_FONT, '', $barLineWidth > 2 ? 8 : 4);
                 $this->Cell($barLineWidth > 2 ? 4 : 2, 3, $series[$c], 0, 2 , 'C');
                 $this->SetXY($this->GetX() + $barLineWidth, $chartYStart);
             }
@@ -350,7 +349,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
                 $this->AddPage();
                 $this->renderTableLabel();
                 $this->SetFillColor(243, 251, 251);
-                $this->SetFont(self::DEFAULT_FONT, '', 10);
+                $this->SetFont(self::DEFAULT_FONT, '', self::DEFAULT_FONT_SIZE);
                 list($red, $green, $blue) = self::COLOR_BLACK;
                 $this->setTextColor($red, $green, $blue);
             }
@@ -435,7 +434,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
      * @param string $barName
      */
     private function drawBarName(string $barName) : void {
-        $this->SetFont(self::DEFAULT_FONT, '', 10);
+        $this->SetFont(self::DEFAULT_FONT, '', self::DEFAULT_FONT_SIZE);
         $this->Cell(200, 12, $barName, 0, 0, 'C');
         $this->Ln(8);
     }
@@ -461,7 +460,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
 
         $this->SetLineWidth(0.2);
 
-        $this->SetFont(self::DEFAULT_FONT, '', 10);
+        $this->SetFont(self::DEFAULT_FONT, '', self::DEFAULT_FONT_SIZE);
         $i = 0;
 
         $barLineNames = [];
@@ -662,7 +661,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
      * @param bool $isDoughnut
      */
     private function PieChart($w, $h, $data, $colors = null, $isDoughnut = false) {
-        $this->SetFont(self::DEFAULT_FONT, '', 10);
+        $this->SetFont(self::DEFAULT_FONT, '', self::DEFAULT_FONT_SIZE);
         $this->setLegends($data);
 
         $XPage = $this->GetX();
@@ -705,7 +704,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
         }
 
         //Legends
-        $this->SetFont(self::DEFAULT_FONT, '', 10);
+        $this->SetFont(self::DEFAULT_FONT, '', self::DEFAULT_FONT_SIZE);
         $x1 = $XPage + 2 * $radius + 4 * $margin;
         $x2 = $x1 + $hLegend + $margin;
         $y1 = $YDiag - $radius + (2 * $radius - $this->NbVal * ($hLegend + $margin)) / 2;
@@ -953,7 +952,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
     {
         // Find $maxGrid so that $maxVal <= pow(10, $maxGrid)
         $maxGrid = ceil(log10(max($maxVal, 1))); // $maxGrid >= 0 (==0 if $maxVal <= 1)
-        $this->SetFont(self::DEFAULT_FONT, '', 10);
+        $this->SetFont(self::DEFAULT_FONT, '', self::DEFAULT_FONT_SIZE);
         list($red, $green, $blue) = self::COLOR_BLACK;
         $this->setDrawColor($red, $green, $blue);
         $this->setLegends($barChartData);
