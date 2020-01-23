@@ -5,7 +5,7 @@ namespace tFPDF;
 
 class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
 {
-    const DEFAULT_FONT = 'Microsoft YaHei';
+    const DEFAULT_FONT = 'NotoSans';
     const DEFAULT_FONT_SIZE = 10;
 
     const COLOR_BLACK = [0,0,0];
@@ -22,7 +22,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
     {
         parent::__construct($pageOrientation, $pageUnits, $pageSize);
 
-        $this->AddFont(self::DEFAULT_FONT, '', 'Microsoft Yahei.ttf', true);
+        $this->AddFont(self::DEFAULT_FONT, '', 'NotoSansExtended-Regular.ttf', true);
     }
 
     /**
@@ -280,7 +280,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
         $headerTopFillColor = isset($this->tableOptions['headerTopFillColor']) ? $this->tableOptions['headerTopFillColor'] : self::COLOR_BLACK;;
         if (!empty($this->tableLabels)) {
             // Create table header
-            $this->SetFont(self::DEFAULT_FONT, '', 11);
+            $this->SetFont(self::DEFAULT_FONT, '', self::DEFAULT_FONT_SIZE + 1);
             $this->SetTextColor(144, 144, 144);
             $this->SetFillColor($headerTopFillColor[0], $headerTopFillColor[1], $headerTopFillColor[2]);
             $maxHeight = 0;
@@ -324,7 +324,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
     private function renderTableContent(iterable $list) : void {
         $this->renderTableLabel();
         $this->SetFillColor(243, 251, 251);
-        $this->SetFont(self::DEFAULT_FONT, '', 10);
+        $this->SetFont(self::DEFAULT_FONT, '', self::DEFAULT_FONT_SIZE);
         list($red, $green, $blue) = self::COLOR_BLACK;
         $this->setTextColor($red, $green, $blue);
         if (!empty($list)) {
