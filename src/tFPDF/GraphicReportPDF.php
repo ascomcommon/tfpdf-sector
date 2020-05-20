@@ -278,10 +278,11 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
      */
     private function renderTableLabel() : void {
         $headerTopFillColor = isset($this->tableOptions['headerTopFillColor']) ? $this->tableOptions['headerTopFillColor'] : self::COLOR_BLACK;;
+        $headerTopTextColor = isset($this->tableOptions['headerTopTextColor']) ? $this->tableOptions['headerTopTextColor'] : self::COLOR_BLACK;;
         if (!empty($this->tableLabels)) {
             // Create table header
             $this->SetFont(self::DEFAULT_FONT, '', self::DEFAULT_FONT_SIZE + 1);
-            $this->SetTextColor(144, 144, 144);
+            $this->SetTextColor($headerTopTextColor[0], $headerTopTextColor[1], $headerTopTextColor[2]);
             $this->SetFillColor($headerTopFillColor[0], $headerTopFillColor[1], $headerTopFillColor[2]);
             $maxHeight = 0;
             $pushRight = 0;
@@ -313,7 +314,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
             $this->SetLineWidth(0.2);
             $this->Line(11, $this->GetY() + $maxHeight, 200, $this->GetY() + $maxHeight);
             $this->Ln($maxHeight);
-            $this->SetTextColor(144, 144, 144);
+            $this->SetTextColor($headerTopTextColor[0], $headerTopTextColor[1], $headerTopTextColor[2]);
         }
     }
 
@@ -418,7 +419,25 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
                 $preY = $this->GetY();
                 $this->setXY($this->getX(), $this->getY() + 2);
                 $this->MultiCell($width, 6, $cell['content'], $border, $alignment, $fill);
-                $maxHeight = max($maxHeight, $this->GetY() - $preY) + 2;
+                $maxHeight = max($maxHeight, $this->GetY() - $preY) + 1;
+                if (!empty($cellOptions['symbols'])) {
+                    $start = $this->getX();
+                    $this->setXY($start, $this->getY());
+                    $symbolsInRow = 0;
+                    $symbolWidth = 6;
+                    if (is_null($this->pngPath)) {
+                        throw new RuntimeException('PNG path is not defined');
+                    }
+                    foreach ($cellOptions['symbols'] as $i => $iconName) {
+                        $this->Image($this->pngPath . $iconName . '.png');
+                        $isEnoughSpace = ($width - $symbolsInRow * $symbolWidth) > 24;
+                        $setYForLastIcon = $i + 1 !== count($cellOptions['symbols']) ? 5.3 : 7.3;
+                        $x = $isEnoughSpace ? $this->getX() + $symbolWidth : $start;
+                        $y = $this->getY() - ($isEnoughSpace ? $setYForLastIcon : 0);
+                        $symbolsInRow = $isEnoughSpace ? $symbolsInRow + 1 : 0;
+                    }
+                    $maxHeight = $maxHeight + 4;
+                }
                 $this->SetXY($this->GetX() + $pushRight, $preY);
             } else {
                 $this->Cell($width, $height, $cell['content'], $border, $lineNumber, $alignment, $fill);
