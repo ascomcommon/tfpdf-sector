@@ -435,7 +435,9 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
                         $x = $isEnoughSpace ? $this->getX() + $symbolWidth : $start;
                         $y = $this->getY() - ($isEnoughSpace ? $setYForLastIcon : 0);
                         $symbolsInRow = $isEnoughSpace ? $symbolsInRow + 1 : 0;
+                        $this->setXY($x, $y);
                     }
+                    $this->setXY($start, $preY);
                     $maxHeight = $maxHeight + 4;
                 }
                 $this->SetXY($this->GetX() + $pushRight, $preY);
