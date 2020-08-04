@@ -407,7 +407,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
                 }
                 foreach ($cellOptions['icons'] as $i => $iconName) {
                     $this->Image($this->pngPath . $iconName . '.png');
-                    $isEnoughSpace = ($width - $iconsInRow * $iconWidth) > 24;
+                    $isEnoughSpace = ($width - $iconsInRow * $iconWidth) > 12;
                     $setYForLastIcon = $i + 1 !== count($cellOptions['icons']) ? 5.3 : 7.3;
                     $x = $isEnoughSpace ? $this->getX() + $iconWidth : $start;
                     $y = $this->getY() - ($isEnoughSpace ? $setYForLastIcon : 0);
@@ -430,15 +430,17 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
                     }
                     foreach ($cellOptions['symbols'] as $i => $iconName) {
                         $this->Image($this->pngPath . $iconName . '.png');
-                        $isEnoughSpace = ($width - $symbolsInRow * $symbolWidth) > 24;
-                        $setYForLastIcon = $i + 1 !== count($cellOptions['symbols']) ? 5.3 : 7.3;
+                        if ($i + 1 == count($cellOptions['symbols'])) {
+                            break;
+                        }
+                        $isEnoughSpace = ($width - $symbolsInRow * $symbolWidth) > 12;
                         $x = $isEnoughSpace ? $this->getX() + $symbolWidth : $start;
-                        $y = $this->getY() - ($isEnoughSpace ? $setYForLastIcon : 0);
+                        $y = $this->getY() - ($isEnoughSpace ? 5.3 : 0);
                         $symbolsInRow = $isEnoughSpace ? $symbolsInRow + 1 : 0;
                         $this->setXY($x, $y);
                     }
+                    $maxHeight = max($maxHeight, $this->GetY() - $preY);
                     $this->setXY($start, $preY);
-                    $maxHeight = $maxHeight + 4;
                 }
                 $this->SetXY($this->GetX() + $pushRight, $preY);
             } else {
