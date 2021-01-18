@@ -507,10 +507,14 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
         // sort legend by name
         sort($barLineNames);
 
+        if (!isset($legendNamesOrdered) || count($legendNamesOrdered) === 0) {
+            $legendNamesOrdered = $barLineNames;
+        }
+
         $this->barChartDrawScales($XDiag, $YDiag, $hDiag, $margin, $maxGrid, $pxDecade);
 
         // Render Y text
-        $this->renderTextByY($barChartData, $colors, $toTime, $barLineNames, $hDiag, $YDiag, $i, $maxBars, $XDiag, $pxDecade, $maxGrid, $unit, $margin);
+        $this->renderTextByY($barChartData, $colors, $toTime, $legendNamesOrdered, $hDiag, $YDiag, $i, $maxBars, $XDiag, $pxDecade, $maxGrid, $unit, $margin);
 
         $x = $this->GetX();
         $y = $this->GetY();
