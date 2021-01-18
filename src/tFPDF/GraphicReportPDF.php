@@ -7,6 +7,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
 {
     const DEFAULT_FONT = 'NotoSans';
     const DEFAULT_FONT_SIZE = 10;
+    const BAR_CHART_ITEM_HEIGHT = 24; // BarChart item height, mm.
 
     const COLOR_BLACK = [0,0,0];
     const PAGE_HEIGHT = 270;
@@ -109,20 +110,22 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
         string $barName,
         $legendNamesOrdered = []
     ) : void {
-        $h = 297 - $this->GetY();
-        if ($h > $count * 12) {
+        $bottomPadding = self::BAR_CHART_ITEM_HEIGHT;
+        $h = 297 - $this->GetY() - $bottomPadding;
+        if ($h >= $count * self::BAR_CHART_ITEM_HEIGHT + 2) {
             $this->drawBarName($barName);
-            $this->barDiagram($w, $count * 12 + 2, $data, $colors, $maxVal, $convertBarVals, 4, $legendNamesOrdered);
+            $this->barDiagram($w, $count * self::BAR_CHART_ITEM_HEIGHT + 2, $data, $colors, $maxVal, $convertBarVals, 4, $legendNamesOrdered);
 
             // blank space after graph
             $this->Ln(20);
         } else {
             $this->AddPage();
             $this->drawBarName($barName);
-            $newH = 297 - $this->GetY();
-            if ($newH > $count * 12) {
-                $this->barDiagram($w, $count * 12 + 1, $data, $colors, $maxVal, $convertBarVals, 4, $legendNamesOrdered);
+            $newH = 297 - $this->GetY() - $bottomPadding;
+            if ($newH >= $count * self::BAR_CHART_ITEM_HEIGHT + 1) {
+                $this->barDiagram($w, $count * self::BAR_CHART_ITEM_HEIGHT + 1, $data, $colors, $maxVal, $convertBarVals, 4, $legendNamesOrdered);
             } else {
+                // Here if graph is too large to fit one page. Try to fit it anyway.
                 $this->barDiagram($w, ($newH / $count), $data, $colors, $maxVal, $convertBarVals, 4, $legendNamesOrdered);
             }
         }
@@ -917,7 +920,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
     }
 
     /**
-     * Renders text by Y
+     * Renders text by Y (and draw sub-bars)
      * @param $barChartData
      * @param $colors
      * @param $toTime
@@ -942,10 +945,10 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
             $yval = $YDiag + ($i + 1) * ($hDiag / ($this->NbVal)) - $cellStart;
 
             if (count($barChartData) > 1) {
-                $barLineHeight = 11 / $maxBars;
+                $barLineHeight = (self::BAR_CHART_ITEM_HEIGHT - 1) / $maxBars;
                 $formula = $yval - $cellStart + (13 / 2 - (((11 / $maxBars) * $maxBars) / 2));
             } else {
-                $barLineHeight = 13 / $maxBars;
+                $barLineHeight = (self::BAR_CHART_ITEM_HEIGHT + 1) / $maxBars;
                 $formula = $yval - $cellStart;
             }
 
