@@ -8,7 +8,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
     const DEFAULT_FONT = 'NotoSans';
     const DEFAULT_FONT_SIZE = 10;
     const BAR_CHART_ITEM_HEIGHT = 24; // BarChart item height, mm.
-
+    const A4_SHEET_HEIGHT = 297; // A4 sheet height, mm (portrait).
     const COLOR_BLACK = [0,0,0];
     const PAGE_HEIGHT = 270;
     private $tableLabels;
@@ -111,7 +111,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
         $legendNamesOrdered = []
     ) : void {
         $bottomPadding = self::BAR_CHART_ITEM_HEIGHT;
-        $h = 297 - $this->GetY() - $bottomPadding;
+        $h = self::A4_SHEET_HEIGHT - $this->GetY() - $bottomPadding;
         if ($h >= $count * self::BAR_CHART_ITEM_HEIGHT + 2) {
             $this->drawBarName($barName);
             $this->barDiagram($w, $count * self::BAR_CHART_ITEM_HEIGHT + 2, $data, $colors, $maxVal, $convertBarVals, 4, $legendNamesOrdered);
@@ -121,7 +121,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
         } else {
             $this->AddPage();
             $this->drawBarName($barName);
-            $newH = 297 - $this->GetY() - $bottomPadding;
+            $newH = self::A4_SHEET_HEIGHT - $this->GetY() - $bottomPadding;
             if ($newH >= $count * self::BAR_CHART_ITEM_HEIGHT + 1) {
                 $this->barDiagram($w, $count * self::BAR_CHART_ITEM_HEIGHT + 1, $data, $colors, $maxVal, $convertBarVals, 4, $legendNamesOrdered);
             } else {
