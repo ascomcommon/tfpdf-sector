@@ -965,9 +965,9 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
 
             // Bar name along Y axis
             $this->SetFontSize(8);
-            $this->SetXY(10, $yval - 3);
+            $this->SetXY(15, $yval - 3);
             $maxLines = 3;
-            $this->MultiCell($XDiag - $margin - 12, 3, $this->legends[$i], 0, 0, false, $maxLines);
+            $this->MultiCell($XDiag - $margin - 12, 3, $this->legends[$i], 0, 'L', false, $maxLines);
             $i++;
         }
     }
