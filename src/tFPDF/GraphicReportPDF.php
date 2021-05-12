@@ -498,7 +498,7 @@ class GraphicReportPDF extends PDF implements GraphicReportPDFInterface
             }
 
             if ($maxBars === 0 || $maxBars < count($item)) {
-                $maxBars = count($item);
+                $maxBars = max(1, count($item));
             }
         }
 
